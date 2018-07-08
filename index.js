@@ -1,5 +1,5 @@
 let Twit = require("twit");
-let request = require("requiest");
+let request = require("request");
 let secrets = require("./secrets");
 
 let T = new Twit ({
@@ -19,3 +19,17 @@ function getQuote(callback) {
         callback(body);
     });
 }
+
+function logQuote(response){
+    let quote = JSON.parse(response);
+    console.log(quote.quoteText, " - ", quote.quoteAuthor);
+};
+
+function postTweet(tweet) {
+    tweet = JSON.parse(tweet);
+    T.post('statuses/update', { status: tweet.quoteText + ' - ' + tweet.quoteAuthor }, function(err, data, response){
+        console.log(data);
+    });
+};
+
+getQuote(postTweet);
