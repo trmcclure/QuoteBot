@@ -1,8 +1,8 @@
-let Twit = require("twit");
-let request = require("request");
-let secrets = require("./secrets");
+const Twit = require("twit");
+const request = require("request");
+const secrets = require("./secrets");
 
-let T = new Twit ({
+const T = new Twit ({
     consumer_key:  secrets.CONSUMER_KEY,
     consumer_secret: secrets.CONSUMER_SECRET,
     access_token: secrets.ACCESS_TOKEN,
@@ -21,13 +21,14 @@ function getQuote(callback) {
 }
 
 function logQuote(response){
-    let quote = JSON.parse(response);
+    const quote = JSON.parse(response);
     console.log(quote.quoteText, " - ", quote.quoteAuthor);
 };
 
 function postTweet(tweet) {
     tweet = JSON.parse(tweet);
-    T.post('statuses/update', { status: tweet.quoteText + ' - ' + tweet.quoteAuthor }, function(err, data, response){
+    T.post('statuses/update', { status: tweet.quoteText + ' - ' + tweet.quoteAuthor }, 
+    function(err, data, response){
         console.log(data);
     });
 };
