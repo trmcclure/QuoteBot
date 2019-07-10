@@ -1,5 +1,5 @@
 const Twit = require("twit");
-const request = require("request");
+const https = require("https");
 const secrets = require("./secrets");
 
 const T = new Twit ({
@@ -12,25 +12,22 @@ const T = new Twit ({
 const quoteApiUrl = "https://api.forismatic.com/api/1.0/?method=getQuote&key=123456&format=json&lang=en";
 
 function getQuote(callback) {
-    request(quoteApiUrl, function(error, response, body) {
-        console.log("error:", error); //Print error if there is one
-        console.log("statusCode:", response && response.statusCode); //Print status code if response was received
-        console.log("body:", body);
-        callback(body);
-    });
+    let data = [];
+    https.get(quoteApiUrl, (res) => {
+        res.setEncoding('utf8')
+        res.on('data', d => data.push(d));
+        res.on('end', () => callback(JSON.parse(data.join(''))))
+        res.on('error', e => console.error(`${e.message}`));
+    })
 }
 
-function logQuote(response){
-    const quote = JSON.parse(response);
-    console.log(quote.quoteText, " - ", quote.quoteAuthor);
-};
-
-function postTweet(tweet) {
-    tweet = JSON.parse(tweet);
-    T.post('statuses/update', { status: tweet.quoteText + ' - ' + tweet.quoteAuthor }, 
+function postQuote(data) {
+    T.post('statuses/update', { status: `${data.quoteText} - ${data.quoteAuthor}
+    
+    this tweet was automatically generated` }, 
     function(err, data, response){
         console.log(data);
     });
 };
 
-getQuote(postTweet);
+getQuote(postQuote);

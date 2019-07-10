@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "npm": "^6.1.0",
-    "request": "^2.87.0",
     "twit": "^2.2.11"
   }
 }
